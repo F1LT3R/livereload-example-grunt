@@ -14,7 +14,8 @@ module.exports = function( grunt ) {
           nospawn: true,
           interrupt: false,
           debounceDelay: 250,
-          livereload:1337,
+          // livereload:1337,
+          livereload: 35729,
         }
       }
     },
@@ -22,15 +23,46 @@ module.exports = function( grunt ) {
     connect: {
       options:{
         open:true,
+
+        // This inserts livereload into whatever is first served...
         livereload:true,
+
+        //... in outr case this is the ./src directory listing.
         base: './src',
         hostname:'127.0.0.1',
         port:'8000',
       },
       serve:{
+        options:{
 
+          // middleware: [
+          //   function myMiddleware(req, res, next) {
+          //     res.end('Hello, world!');
+          //   }
+          // ]
+
+        // middleware: function(connect, options, middlewares) {
+        //   // inject a custom middleware into the array of default middlewares
+        //   middlewares.unshift(function(req, res, next) {
+        //     if (req.url !== '/hello/world') return next();
+        //     res.end('Hello, world from port #' + options.port + '!');
+        //   });
+        //   return middlewares;
+        // },
+
+        // middleware: function (connect) {
+        //   return [
+        //     require('connect-livereload')(), // <--- here
+        //     checkForDownload,
+        //     mountFolder(connect, '.tmp'),
+        //     mountFolder(connect, 'app')
+        //   ];
+        // }
+
+
+        }
       }
-    }
+    },
 
   });
 
@@ -40,7 +72,7 @@ module.exports = function( grunt ) {
 
 
   grunt.registerTask("default", [
-    "connect",
+    "connect:serve",
     "watch",
   ]);
 
