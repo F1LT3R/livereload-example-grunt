@@ -1,63 +1,51 @@
 
+var lrSnippet = require('connect-livereload')();
+
+var livereloadMiddleware = function (connect, options) {
+  var base = options.base[0];
+
+  return [
+    lrSnippet,
+    connect.static(base),
+    connect.directory(base)
+  ];
+};
+
 module.exports = function( grunt ) {
 
   grunt.loadNpmTasks('grunt-contrib-connect');
   grunt.loadNpmTasks('grunt-contrib-watch');
 
   grunt.initConfig({
-
     watch: {
-      all: {
-        files: ["src/**/*"],
-        tasks: ["sometask"],
+      'public': {
+        files: ["public/**/*"],
+        tasks: [],
         options: {
-          nospawn: true,
-          interrupt: false,
-          debounceDelay: 250,
-          // livereload:1337,
-          livereload: 35729,
+          livereload: true,
         }
       }
     },
 
     connect: {
       options:{
-        port:'8000',
-        hostname:'127.0.0.1',
-        open:true,
+        hostname: '127.0.0.1',
+        port: '8000',
+        base: 'public',
+        open: true,
       },
-      'serve-index':{
+      'public':{
         options:{
-          base: {
-            path: 'src',
-            options: {
-              index: 'test2.html',
-            }
-          }
-        }
-      },
-      'serve-directory':{
-        options:{
-          // This injects livereload into the directory listings
-          livereload:true,
-          base: {
-            path: 'src',
-          }
+          middleware: livereloadMiddleware
         }
       }
     },
 
   });
 
-  grunt.registerTask('sometask', function() {
-    grunt.log.write("sometask ran from watch.");
-  });
-
-
   grunt.registerTask("default", [
-    // "connect:serve-index",
-    "connect:serve-directory",
-    "watch",
+    "connect:public",
+    "watch:public",
   ]);
 
 };
